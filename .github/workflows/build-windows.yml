@@ -1,0 +1,25 @@
+name: Build Windows x64
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S . -B build -A x64 -DWIN_ICONV_BUILD_EXECUTABLE=ON
+
+      - name: Build
+        run: cmake --build build --config Release --target win_iconv
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: win_iconv-windows-x64
+          path: build/Release/win_iconv.exe
+          if-no-files-found: error
